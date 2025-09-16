@@ -52,7 +52,7 @@ const Content = ({ showModal, setShowModal }) => {
       difficulty: "Intermediate",
       tags: ["transition,zoom,effect"],
       file: "post.jpg",
-      likes: 1,
+      likes: null,
       liked: false,
       comments: [],
     },
@@ -185,7 +185,13 @@ const Content = ({ showModal, setShowModal }) => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-l from-zinc-200 via-5% to-zinc-100 overflow-x-hidden">
+    <div
+      className="min-h-screen w-full overflow-x-hidden"
+      style={{
+        background:
+          "linear-gradient(135deg, #fdf2f8 0%, #faf5ff 50%, #ecfeff 100%)",
+      }}
+    >
       <ToastContainer />
 
       {/* Heading */}
@@ -206,7 +212,7 @@ const Content = ({ showModal, setShowModal }) => {
       </motion.div>
 
       {/* Cards */}
-      <div className="contentBox grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-30 py-10 -mt-10">
+      <div className="contentBox grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 px-8 sm:px-6 md:px-20 gap-6 py-10 -mt-10">
         {cards.map((c, i) => (
           <motion.div
             key={i}
@@ -214,13 +220,13 @@ const Content = ({ showModal, setShowModal }) => {
             variants={cardVariants}
             initial="hidden"
             animate="visible"
-            className="group relative bg-zinc-200 w-full h-[60vh] rounded-[31px] shadow-md overflow-hidden
-             transition-transform duration-300 ease-in-out hover:scale-102 cursor-pointer"
+            className="group relative bg-zinc-200 w-full min-h-[40vh] sm:min-h-[50vh] md:h-[65vh] rounded-[31px] shadow-md overflow-hidden
+            transition-transform duration-300 ease-in-out hover:scale-102 cursor-pointer"
           >
             <img src={c.img} alt="" className="w-full h-full object-cover" />
             <div
               className="absolute inset-0 bg-gradient-to-t from-gray-800/70 to-transparent flex flex-col justify-between p-3
-              transition-opacity duration-300 ease-in-out group-hover:opacity-80"
+            transition-opacity duration-300 ease-in-out group-hover:opacity-80"
             >
               <div className="flex justify-between">
                 <button
@@ -250,7 +256,7 @@ const Content = ({ showModal, setShowModal }) => {
       >
         <button
           className="bg-blue-600 text-white font-medium py-3 px-8 rounded-full shadow-md 
-            transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
+          transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
         >
           See all Trending effects
         </button>
@@ -406,66 +412,83 @@ const Content = ({ showModal, setShowModal }) => {
       )}
 
       {/* Community Posts */}
-      <div className="px-4 sm:px-8 mt-10 text-3xl sm:text-5xl text-shadow-blue-50 text-[#0087e2] font-bold text-center">
+      <div className="px-4 sm:px-8 mt-10 text-3xl sm:text-5xl text-shadow-blue-50 text-[#0087e2] font-bold text-center ">
         <h1>Community Posts</h1>
+       </div>
+     <div className="w-[95%] sm:w-[60%] mx-auto mt-10 flex flex-col gap-6 mb-20 px-4">
+  {posts.map((p) => (
+    <motion.div
+      key={p.id}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="p-5 rounded-2xl shadow-lg bg-white border border-gray-100 mb-6"
+    >
+      <div className="flex justify-between items-center mb-3">
+        <h2 className="text-xl sm:text-2xl font-semibold text-blue-800">
+          {p.title}
+        </h2>
+        <button
+          className={`px-3 py-1 rounded-xl flex items-center gap-2 font-medium transition-all duration-300 
+            ${
+              p.liked
+                ? "bg-gradient-to-r from-blue-500 to-blue-700 text-white shadow-md scale-105"
+                : "bg-gray-100 text-blue-700 hover:bg-blue-100 hover:scale-105"
+            }`}
+          onClick={() => {
+            const updatedPosts = posts.map((post) =>
+              post.id === p.id
+                ? post.liked
+                  ? { ...post, likes: post.likes - 1, liked: false }
+                  : { ...post, likes: post.likes + 1, liked: true }
+                : post
+            );
+            setPosts(updatedPosts);
+            savePosts(updatedPosts);
+          }}
+        >
+          <span className="text-sm sm:text-base font-semibold">{p.likes}</span>
+          <span className="text-sm sm:text-base">{p.liked ? "Liked" : "Like"}</span>
+        </button>
       </div>
-      <div className="w-[95%] sm:w-[60%] mx-auto mt-10 flex flex-col gap-6 mb-20 px-4">
-        {posts.map((p) => (
-          <motion.div
-            key={p.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="p-5 rounded-2xl shadow-lg bg-white border border-gray-100 mb-6"
-          >
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="text-xl sm:text-2xl font-semibold text-blue-800">
-                {p.title}
-              </h2>
-              <button
-                className={`px-3 py-1 rounded-xl ${
-                  p.liked ? "bg-blue-800 text-white" : "bg-zinc-100 text-blue-800"
-                }`}
-                onClick={() => handleLike(p.id)}
-              >
-                {p.likes}
-                <span className="text-blue-600 ml-2 font-medium">Like</span>
-              </button>
-            </div>
-            <p className="text-gray-600 text-base sm:text-[18px]">{p.body}</p>
-            {p.file && (
-              <img
-                src={p.file}
-                className="mt-3 max-h-60 object-contain rounded-xl w-full"
-              />
-            )}
-            {p.tags.length > 0 && (
-              <div className="flex gap-2 flex-wrap mt-3">
-                {p.tags.map((t, idx) => (
-                  <span
-                    key={idx}
-                    className="bg-gray-200 px-3 py-1 rounded-full text-sm text-gray-700"
-                  >
-                    {t}
-                  </span>
-                ))}
+
+      <p className="text-gray-700 text-base sm:text-[18px] leading-relaxed">{p.body}</p>
+
+      {p.file && (
+        <img
+          src={p.file}
+          className="mt-3 max-h-60 object-contain rounded-xl w-full shadow-sm"
+        />
+      )}
+
+      {p.tags.length > 0 && (
+        <div className="flex gap-2 flex-wrap mt-3">
+          {p.tags.map((t, idx) => (
+            <span
+              key={idx}
+              className="bg-gradient-to-r from-purple-100 to-pink-100 px-3 py-1 rounded-full text-sm font-medium text-purple-700 shadow-sm hover:scale-105 transition-transform duration-200"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-4">
+        <CommentInput onSubmit={(c) => handleAddComment(p.id, c)} />
+        {p.comments.length > 0 && (
+          <div className="mt-3 flex flex-col gap-2">
+            {p.comments.map((c, i) => (
+              <div key={i} className="text-[#635b5d] text-[16px]">
+                💬 {c}
               </div>
-            )}
-            <div className="mt-4">
-              <CommentInput onSubmit={(c) => handleAddComment(p.id, c)} />
-              {p.comments.length > 0 && (
-                <div className="mt-3 flex flex-col gap-2">
-                  {p.comments.map((c, i) => (
-                    <div key={i} className="text-[#635b5d] text-[16px]">
-                      💬{c}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </motion.div>
-        ))}
+            ))}
+          </div>
+        )}
       </div>
+    </motion.div>
+  ))}
+</div>
     </div>
   );
 };
