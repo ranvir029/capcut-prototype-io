@@ -188,27 +188,27 @@ const Content = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-l from-zinc-200 via-5% to-zinc-100  overflow-x-hidden">
+    <div className="min-h-screen w-full bg-gradient-to-l from-zinc-200 via-5% to-zinc-100 overflow-x-hidden">
       <ToastContainer />
       {/* Heading */}
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="text-center py-10 font-[monospace]"
+        className="text-center py-10 font-[monospace] px-4"
       >
-        <h1 className="text-6xl font-medium">
+        <h1 className="text-4xl sm:text-6xl font-medium">
           <span className="bg-gradient-to-r from-sky-400 to-blue-500 bg-clip-text text-transparent font-semibold">
             TRENDING EFFECTS
           </span>
         </h1>
-        <h2 className="text-center text-2xl text-[darkgrey]">
+        <h2 className="text-center text-lg sm:text-2xl text-[darkgrey]">
           Popular effects people are loving right now
         </h2>
       </motion.div>
 
       {/* Cards */}
-      <div className="contentBox flex flex-wrap justify-center gap-8 px-4">
+      <div className="contentBox grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-30 py-10 -mt-10">
         {cards.map((c, i) => (
           <motion.div
             key={i}
@@ -216,7 +216,7 @@ const Content = () => {
             variants={cardVariants}
             initial="hidden"
             animate="visible"
-            className="group relative bg-zinc-200 h-90 w-65 rounded-[31px] shadow-md overflow-hidden
+            className="group relative bg-zinc-200 w-full h-[60vh] rounded-[31px] shadow-md overflow-hidden
              transition-transform duration-300 ease-in-out hover:scale-102 cursor-pointer"
           >
             <img src={c.img} alt="" className="w-full h-full object-cover" />
@@ -245,7 +245,7 @@ const Content = () => {
 
       {/* Center Button */}
       <motion.div
-        className="flex justify-center mt-10"
+        className="flex justify-center mt-10 px-4"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: cards.length * 0.6, duration: 0.5 }}
@@ -260,20 +260,20 @@ const Content = () => {
 
       {/* How do i edit this */}
       <motion.div
-        className="mt-16 mx-auto w-[80vw] h-[65vh] mb-30 bg-[#ebebeb] rounded-2xl p-4 shadow-md border-t-2 border-t-gray-50"
+        className="mt-16 mx-auto w-[95vw] sm:w-[80vw] h-auto sm:h-[65vh] mb-30 bg-[#ebebeb] rounded-2xl p-4 shadow-md border-t-2 border-t-gray-50"
         initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false, amount: 0.3 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
       >
-        <div className="items-center flex flex-col mt-6 ">
+        <div className="items-center flex flex-col mt-6 px-4 text-center">
           <h1 className="text-2xl lg:text-5xl md:text-5xl font-normal text-[#2896ab] ">
             How Do I Edit This?
           </h1>
-          <h1 className="mt-7 text-[26px]  text-2xl lg:text-5xl md:text-5xl font-medium text-[#38448cc2]">
+          <h1 className="mt-7 text-xl sm:text-2xl lg:text-5xl md:text-5xl font-medium text-[#38448cc2]">
             🎬 Saw a sick TikTok effect? Instagram transition? YouTube edit?
           </h1>
-          <p className="text-[24px] text-gray-500 font-normal px-35 mt-10 text-center md:text-center lg:text-center">
+          <p className="text-base sm:text-lg text-gray-500 font-normal mt-10 text-center">
             Drop the link, upload a screenshot, or describe what you saw.
             <br />
             Real editors will show you exactly how to recreate it! ✨
@@ -286,7 +286,7 @@ const Content = () => {
           </button>
         </div>
       </motion.div>
-      
+
       {/* Modal Form */}
       {form && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -298,7 +298,7 @@ const Content = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="relative z-10 bg-white w-[90%] sm:w-[50vw] p-8 rounded-2xl shadow-lg overflow-y-auto max-h-[90vh]"
+            className="relative z-10 bg-white w-[90%] sm:w-[50vw] max-w-2xl p-8 rounded-2xl shadow-lg overflow-y-auto max-h-[90vh]"
           >
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-3xl font-semibold text-blue-700">
@@ -408,10 +408,10 @@ const Content = () => {
       )}
 
       {/* Community Posts */}
-      <div className="px-35 -mt-10 text-5xl text-shadow-blue-50 text-[#0087e2] font-bold">
-         <h1>Community Posts</h1>
+      <div className="px-4 sm:px-8 mt-10 text-3xl sm:text-5xl text-shadow-blue-50 text-[#0087e2] font-bold text-center">
+        <h1>Community Posts</h1>
       </div>
-      <div className="w-[90%] sm:w-[60%] mx-auto mt-10 flex flex-col gap-6 mb-20">
+      <div className="w-[95%] sm:w-[60%] mx-auto mt-10 flex flex-col gap-6 mb-20 px-4">
         {posts.map((p) => (
           <motion.div
             key={p.id}
@@ -421,23 +421,24 @@ const Content = () => {
             className="p-5 rounded-2xl shadow-lg bg-white border border-gray-100 mb-6"
           >
             <div className="flex justify-between items-center mb-3">
-              <h2 className="text-2xl font-semibold text-blue-800">
+              <h2 className="text-xl sm:text-2xl font-semibold text-blue-800">
                 {p.title}
               </h2>
               <button
-                className={`px-3 py-1 rounded-xl bg-blue-800${
-                  p.liked ?"text-blue-800" : "bg-zinc-100"
+                className={`px-3 py-1 rounded-xl ${
+                  p.liked ? "bg-blue-800 text-white" : "bg-zinc-100 text-blue-800"
                 }`}
                 onClick={() => handleLike(p.id)}
               >
-              {p.likes}<span className="text-blue-600 ml-2 font-medium">Like</span>
+                {p.likes}
+                <span className="text-blue-600 ml-2 font-medium">Like</span>
               </button>
             </div>
-            <p className="text-gray-600 text-[18px]">{p.body}</p>
+            <p className="text-gray-600 text-base sm:text-[18px]">{p.body}</p>
             {p.file && (
               <img
                 src={p.file}
-                className="mt-3 max-h-60 object-contain rounded-xl"
+                className="mt-3 max-h-60 object-contain rounded-xl w-full"
               />
             )}
             {p.tags.length > 0 && (
@@ -458,7 +459,7 @@ const Content = () => {
                 <div className="mt-3 flex flex-col gap-2">
                   {p.comments.map((c, i) => (
                     <div key={i} className="text-[#635b5d] text-[16px]">
-                       💬{c}
+                      💬{c}
                     </div>
                   ))}
                 </div>
