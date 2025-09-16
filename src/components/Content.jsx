@@ -43,19 +43,120 @@ const Content = ({ showModal, setShowModal }) => {
 
   // Dummy post always first
   const dummyPosts = [
+  {
+  id: 1,
+  title: "Smooth Zoom Transition Effect",
+  body: "Saw an amazing smooth zoom transition on Instagram Reels. How can I create this in Premiere Pro or After Effects?",
+  tool: "Premiere Pro",
+  platform: "Instagram Reels",
+  difficulty: "Intermediate",
+  tags: ["transition", "zoom", "effect"],
+  file: "post.jpg",
+  likes: 72,
+  liked: false,
+  comments: [
+    "In Premiere Pro: Nest your clips, apply the 'Transform' effect, and keyframe the Scale & Position synced to the beat. Uncheck 'Use Composition's Shutter Angle' for smooth motion blur.",
+    "After Effects: Parent your clip to a null object and keyframe the null's scale to zoom in/out. Turn on Motion Blur for a cinematic look."
+  ]
+},
+   {
+    id:2,
+    title: "Interstellar Spinning Effect Tutorial",
+  body: "How to make that space spinning effect like the movie",
+  tool: "Premiere Pro",
+  platform: "YouTube Shorts",
+  difficulty: "Intermediate",
+  tags: ["space", "transition", "cinematic", "rotation"],
+  file: "2.jpg",
+  likes: 56, // you can make this null or random if you want
+  liked: false,
+  comments: [
+    "Use nested sequences and rotate your footage counter to the background rotation for a realistic spin.",
+    "Add directional blur with keyframes to simulate motion blur. Works really well for space effects.",
+    "If you want more control, do the rotation in After Effects and then import back into Premiere."
+  ]
+},
     {
-      id: 1,
-      title: "Learn This Cool Transition Effect",
-      body: "I saw this amazing smooth zoom transition on Instagram reels. Can someone explain how to do it in Premiere Pro or After Effects?",
-      tool: "Premiere Pro",
-      platform: "Instagram Reels",
-      difficulty: "Intermediate",
-      tags: ["transition,zoom,effect"],
-      file: "post.jpg",
-      likes: null,
-      liked: false,
-      comments: [],
-    },
+  id: 3,
+  title: "Seamless Glitch Transition Tutorial",
+  body: "Learn to create a digital glitch/corruption effect between clips for Instagram Reels.",
+  tool: "Premiere Pro",
+  platform: "Instagram Reels",
+  difficulty: "Intermediate",
+  tags: ["glitch", "transition" , "rgb-split" , "vhs" ],
+  file: "3.jpg",
+  likes: 42, // you can keep null if you want random
+  liked: false,
+  comments: [
+    "In Premiere Pro: Stack your clips, apply Wave Warp + Color Offset, keyframe parameters to spike at the cut for a realistic glitch.",
+    "CapCut tip: Add its built-in 'Glitch' transition and sync to your beat — quick and easy!"
+  ]
+},
+
+    {
+  id: 4,
+  title: "Clone Effect – Appear Multiple Times in One Shot",
+  body: "Step-by-step guide to creating a clone effect where you appear multiple times in the same frame.",
+  tool: "Premiere Pro",
+  platform: "Instagram Reels",
+  difficulty: "Intermediate",
+  tags: ["clone", "masking", "composite", "multiple"],
+  file: "4.jpg",
+  likes: 63, // or null/random
+  liked: false,
+  comments: [
+    "In Premiere Pro: Shoot on a tripod, record multiple takes in the same frame, stack them on the timeline and use opacity masks to reveal each version of yourself.",
+    "After Effects: Use rotoscoping to cut yourself out in each take, then composite all layers together for more precise control."
+  ]
+},
+    {
+  id: 5,
+  title: "Smooth Zoom Transition Synced to Beat Drop",
+  body: "Create a seamless zoom-in/zoom-out effect perfectly timed with the music beat.",
+  tool: "Premiere Pro",
+  platform: "Instagram Reels",
+  difficulty: "Intermediate",
+  tags: ["zoom", "transition", "beat-sync", "effect"],
+  file: "5.png",
+  likes: 78, // or null/random
+  liked: false,
+  comments: [
+    "In Premiere Pro: Cut clips on the beat, nest them, then apply the 'Transform' effect. Keyframe scale and position to zoom in/out and uncheck 'Use Composition's Shutter Angle' for smoother motion blur.",
+    "After Effects: Parent your clip to a null object, keyframe its scale synced to the beat, and enable motion blur for cinematic smoothness."
+  ]
+},
+    {
+  id: 6,
+  title: "Fun Face Replacement Effect",
+  body: "Learn how to replace a face in your video with another face or image for comedy or creative edits.",
+  tool: "Premiere Pro",
+  platform: "Instagram Reels",
+  difficulty: "Intermediate",
+  tags: ["face-replacement", "masking", "tracking", "effect"],
+  file: "6.jpg",
+  likes: 54, // or null/random
+  liked: false,
+  comments: [
+    "In Premiere Pro: Import the replacement face image, use the 'Mask' feature in the Opacity panel to cut it out, then keyframe position/scale to follow the subject.",
+    "For more precision, After Effects' 'Motion Tracking' + 'Mocha AE' plugin can track facial movement and let you pin a replacement image to the tracked points."
+  ]
+},
+    {
+  id: 7,
+  title: "Background Removal Without Green Screen",
+  body: "How to remove a video's background even when you didn't film on a green screen.",
+  tool: "CapCut", // since you’re talking about CapCut’s Remove BG
+  platform: "Instagram Reels",
+  difficulty: "Intermediate",
+  tags: ["background-removal", "keying", "masking", "effect"],
+  file: "7.png",
+  likes: 39, // or null/random
+  liked: false,
+  comments: [
+    "CapCut: Use the 'Remove Background' feature under Cutout to instantly isolate yourself. You can then add any background or animation behind.",
+    "Premiere Pro: For more control, use the Ultra Key effect or the new AI-powered 'Background Removal' effect, then refine edges with masks and feathering."
+  ]
+},
   ];
 
   const [posts, setPosts] = useState(dummyPosts);
@@ -457,7 +558,7 @@ const Content = ({ showModal, setShowModal }) => {
       {p.file && (
         <img
           src={p.file}
-          className="mt-3 max-h-60 object-contain rounded-xl w-full shadow-sm"
+          className="mt-3 max-h-60 object-cover rounded-xl w-full shadow-sm"
         />
       )}
 
