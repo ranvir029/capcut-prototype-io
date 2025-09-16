@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import { RiVideoOnAiLine } from "react-icons/ri";
 import { IoMdSearch, IoMdTrendingUp } from "react-icons/io";
 import { MdOutlineHome } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { HiMenu, HiX } from "react-icons/hi";
 
-const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+const Navbar = ({ onAskQuestion }) => {
+  const [menuOpen, setMenuOpen] = React.useState(false);
 
   return (
     <div className=" top-0 sticky w-full bg-gradient-to-t from-sky-500 to-indigo-500 shadow-md border-b-1 border-blue-500 shadow-zinc-200 z-50">
-      <div className="mx-auto  sm:px-4 lg:px-6 xl:px-8">
+      <div className="mx-auto  sm:px-4 lg:px-6 xl:px-8 ">
         <div className="flex items-center justify-between h-25 px-8">
           {/* Logo */}
           <div className="flex items-center">
@@ -54,7 +54,10 @@ const Navbar = () => {
               <IoMdTrendingUp className="text-inherit" size={20} />
               <h1 className="font-bold text-sm sm:text-base ml-1">Trending</h1>
             </div>
-            <div className="flex items-center bg-[#5efb46] px-3 py-2 rounded-xl transform transition-transform duration-300 ease-in-out hover:-translate-y-1 cursor-pointer">
+            <div
+              onClick={onAskQuestion}
+              className="flex items-center bg-[#5efb46] px-3 py-2 rounded-xl transform transition-transform duration-300 ease-in-out hover:-translate-y-1 cursor-pointer"
+            >
               <button className="font-medium text-[#2927d1] text-sm sm:text-base">
                 + Ask a Question
               </button>
@@ -102,14 +105,17 @@ const Navbar = () => {
               <IoMdTrendingUp className="text-inherit" size={20} />
               <h1 className="font-bold text-sm sm:text-base ml-1">Trending</h1>
             </div>
-            <div className="flex items-center bg-[#5efb46] px-3 py-2 rounded-xl transform transition-transform duration-300 ease-in-out hover:-translate-y-1 cursor-pointer w-full">
+            <div
+              onClick={() => {
+                setMenuOpen(false);
+                onAskQuestion();
+              }}
+              className="flex items-center bg-[#5efb46] px-3 py-2 rounded-xl transform transition-transform duration-300 ease-in-out hover:-translate-y-1 cursor-pointer w-full"
+            >
               <button className="font-medium text-[#2927d1] text-sm sm:text-base">
                 + Ask a Question
               </button>
             </div>
-            {/* <button className="text-white hover:text-[#5efb46]">
-              <CgProfile size={22}/>
-            </button> */}
           </div>
         </div>
       )}

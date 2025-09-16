@@ -30,8 +30,7 @@ const CommentInput = ({ onSubmit }) => {
   );
 };
 
-const Content = () => {
-  const [form, setForm] = useState(false);
+const Content = ({ showModal, setShowModal }) => {
   const [formData, setFormData] = useState({
     name: "",
     message: "",
@@ -61,7 +60,6 @@ const Content = () => {
 
   const [posts, setPosts] = useState(dummyPosts);
 
-  // Load posts from localStorage
   useEffect(() => {
     const saved = localStorage.getItem("myPosts");
     if (saved) {
@@ -69,7 +67,6 @@ const Content = () => {
     }
   }, []);
 
-  // Save posts to localStorage (exclude dummy)
   const savePosts = (updatedPosts) => {
     const realPosts = updatedPosts.filter((p) => p.id !== 1);
     localStorage.setItem("myPosts", JSON.stringify(realPosts));
@@ -108,7 +105,7 @@ const Content = () => {
     savePosts(updatedPosts);
 
     toast.success("Your post has been created successfully!");
-    setForm(false);
+    setShowModal(false);
     setFormData({
       name: "",
       message: "",
@@ -190,6 +187,7 @@ const Content = () => {
   return (
     <div className="min-h-screen w-full bg-gradient-to-l from-zinc-200 via-5% to-zinc-100 overflow-x-hidden">
       <ToastContainer />
+
       {/* Heading */}
       <motion.div
         initial={{ opacity: 0, y: -50 }}
@@ -279,7 +277,7 @@ const Content = () => {
             Real editors will show you exactly how to recreate it! ✨
           </p>
           <button
-            onClick={() => setForm(true)}
+            onClick={() => setShowModal(true)}
             className="p-4 bg-[#4b51e4] mt-9 rounded-[20px] text-white text-[17px] font-medium shadow-xl cursor-pointer"
           >
             How do i edit this
@@ -288,11 +286,11 @@ const Content = () => {
       </motion.div>
 
       {/* Modal Form */}
-      {form && (
+      {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setForm(false)}
+            onClick={() => setShowModal(false)}
           ></div>
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -304,7 +302,7 @@ const Content = () => {
               <h1 className="text-3xl font-semibold text-blue-700">
                 Ask for Editing Help
               </h1>
-              <button onClick={() => setForm(false)}>
+              <button onClick={() => setShowModal(false)}>
                 <IoMdClose
                   size={26}
                   className="text-gray-700 cursor-pointer hover:text-red-500"
