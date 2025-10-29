@@ -6,6 +6,7 @@ import { IoIosArrowRoundBack } from "react-icons/io";
 
 const Login = () => {
   const navigate = useNavigate();
+  const backendUrl = `https://capncut-backend-1.onrender.com`;
   const [data, setFormData] = useState({
     email: "",
     password: "",
@@ -43,7 +44,7 @@ const Login = () => {
     }
 
     try {
-      const LoginData = await axios.post(`https://capncut-backend-1.onrender.com/loginData`, {
+      const LoginData = await axios.post(`${backendUrl}/loginData`, {
         email: data.email,
         password: data.password,
       });
@@ -75,17 +76,20 @@ const Login = () => {
           {/* Header */}
           <div className="flex flex-col items-center mb-6">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2 text-center">
-              Welcome Back!
+              Sign In
             </h2>
             <p className="text-gray-500 dark:text-gray-300 text-center text-sm sm:text-base">
-              We missed you! Please enter your details
+              Hi! Welcome back, please fill your details
             </p>
           </div>
 
           {/* Form */}
           <form onSubmit={handelLogin} className="flex flex-col gap-4">
             <div className="flex flex-col">
-              <label htmlFor="email" className="mb-1 font-medium text-gray-700 dark:text-gray-200">
+              <label
+                htmlFor="email"
+                className="mb-1 font-medium text-gray-700 dark:text-gray-200"
+              >
                 Email
               </label>
               <input
@@ -100,7 +104,10 @@ const Login = () => {
             </div>
 
             <div className="flex flex-col">
-              <label htmlFor="password" className="mb-1 font-medium text-gray-700 dark:text-gray-200">
+              <label
+                htmlFor="password"
+                className="mb-1 font-medium text-gray-700 dark:text-gray-200"
+              >
                 Password
               </label>
               <input
@@ -122,10 +129,26 @@ const Login = () => {
             </button>
           </form>
 
+          <div className="flex items-center gap-2 w-full my-3 text-[17px] text-gray-300">
+            <hr className="flex-grow border-gray-400" />
+            or
+            <hr className="flex-grow border-gray-400" />
+          </div>
+
+          <a href="https://capncut-backend-1.onrender.com/auth/google">
+            <button className="w-full bg-white   font-medium border-1 cursor-pointer border-gray-400  text-black py-3 gap-2 flex items-center justify-center rounded-lg mt-2">
+              <img src="g-logo.png" alt="" className="w-7 h-7" />
+              Sign in with Google
+            </button>
+          </a>
+
           {/* Signup Link */}
-          <p className="text-gray-500 dark:text-gray-300 text-center mt-4 text-sm sm:text-base">
+          <p className="text-gray-500  dark:text-gray-300 text-center mt-4 text-sm sm:text-base">
             Don't have an account?{" "}
-            <Link to="/signup" className="text-blue-600 dark:text-blue-400 font-medium hover:underline">
+            <Link
+              to="/signup"
+              className="text-blue-600 underline dark:text-blue-400 font-medium hover:underline"
+            >
               Sign Up
             </Link>
           </p>

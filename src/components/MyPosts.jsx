@@ -4,11 +4,12 @@ import axios from "axios";
 const MyPosts = () => {
   const [posts, setPosts] = useState([]);
   const token = localStorage.getItem("token");
+  const backendUrl = `https://capncut-backend-1.onrender.com`;
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await axios.get("https://capncut-backend-1.onrender.com/myPosts", {
+        const res = await axios.get(`${backendUrl}/myPosts`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setPosts(res.data);
@@ -20,30 +21,42 @@ const MyPosts = () => {
   }, [token]);
 
   return (
-    <div className="min-h-screen flex flex-col p-10 md:p-7 bg-[#101034]">
-      <h1 className="text-white mb-4 md:mb-2 text-[41px] font-medium">My Posts</h1>
-      <div className="border-b-2 border-zinc-400 mb-8"></div>
+    <div className="min-h-screen flex flex-col p-5 md:p-10 bg-[#101034]">
+      <h1 className="text-white text-4xl md:text-5xl font-semibold mb-4 text-center md:text-left">
+        My Posts
+      </h1>
+      <div className="border-b border-zinc-500 mb-8 w-full"></div>
+
       {posts.length === 0 ? (
-        <h2 className="text-white text-xl">No posts yet.</h2>
+        <h2 className="text-white text-xl text-center mt-10">No posts yet.</h2>
       ) : (
-        posts.map((post) => (
-          <div
-            key={post._id}
-            className="flex flex-col gap-2 mb-6 items-center justify-center"
-          >
-            <div className="bg-blue-700 py-7 px-7 w-[80vw]  md:w-[90vw]   rounded-[5px] shadow-md text-white">
-              <h3 className="font-medium text-[25px] mb-2">{post.title}</h3>
-              <p className="mt-1 text-gray-200 text-justify">{post.Description}</p>
+        <div className="flex flex-col items-center gap-8">
+          {posts.map((post) => (
+            <div
+              key={post._id}
+              className="flex flex-col w-full md:w-[70%] gap-4"
+            >
+              <div className="bg-blue-700 p-6 md:p-8 rounded-lg shadow-lg text-white hover:shadow-xl transition-shadow duration-300">
+                <h3 className="font-semibold text-2xl md:text-3xl mb-2">
+                  {post.title}
+                </h3>
+                <p className="text-gray-200 text-justify md:text-lg">
+                  {post.Description}
+                </p>
+              </div>
+
+              {post.image && (
+                <div className="w-full overflow-hidden rounded-lg shadow-md">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    className="w-full max-h-96 object-cover transform hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              )}
             </div>
-            {post.image && (
-              <img
-                src={post.image}
-                alt={post.title}
-                className="w-full max-h-64 object-cover rounded mt-2"
-              />
-            )}
-          </div>
-        ))
+          ))}
+        </div>
       )}
     </div>
   );

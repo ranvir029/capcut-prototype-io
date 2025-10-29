@@ -14,11 +14,17 @@ import { FaUserEdit } from "react-icons/fa";
 import { LuPenLine } from "react-icons/lu";
 import { PiNewspaperFill } from "react-icons/pi";
 import { ClipLoader } from "react-spinners";
-
 import { GiHamburgerMenu } from "react-icons/gi";
+import { IoIosTrendingUp } from "react-icons/io";
+import { MdOutlineFileUpload } from "react-icons/md";
+import { CgComment } from "react-icons/cg";
+import { IoMdAdd } from "react-icons/io";
+import { TbLogout2 } from "react-icons/tb";
+
 const NavBar = () => {
   // Navigating to Login page
   const navigate = useNavigate();
+  const backendUrl = `https://capncut-backend-1.onrender.com`;
   // formData Managing
   const [formdata, setFormData] = useState(false);
   const [ui, setUi] = useState(false);
@@ -27,13 +33,17 @@ const NavBar = () => {
     Description: "",
     image: null,
   });
+  const [profile, setProfile] = useState(false);
   const [logout, setLogout] = useState(false);
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [userId, setUserId] = useState(null);
   const [openReplies, setOpenReplies] = useState({});
   const [isOpen, setIsOpen] = useState(false);
-  const[loader,setLoader]=useState(false);
+  const [loader, setLoader] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState("all"); // all, liked, hasImage
+  const [sortByRecent, setSortByRecent] = useState(false); // true or false
+
   function managePostData(e) {
     const { name, value } = e.target;
     setUserData((prev) => ({
@@ -41,6 +51,17 @@ const NavBar = () => {
       [name]: value,
     }));
   }
+  // handel the jwt of google auth part
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    if (token) {
+      localStorage.setItem("token", token);
+      toast.success("Logged in successfully");
+      navigate("/"); // redirect to homepage/dashboard
+    }
+  }, []);
+
   useEffect(() => {
     function checkTokenForLogout() {
       const checkToken = localStorage.getItem("token");
@@ -68,7 +89,7 @@ const NavBar = () => {
   }, []);
   async function getPostData(currentUserId) {
     try {
-      const res = await axios.get("https://capncut-backend-1.onrender.com/formData");
+      const res = await axios.get(`${backendUrl}/formData`);
 
       // map through posts and set likesCount + isLiked
       const postsWithLikes = res.data.map((post) => ({
@@ -83,6 +104,17 @@ const NavBar = () => {
       console.error(err);
     }
   }
+  useEffect(() => {
+    function checkProfile() {
+      const profileSectionCheckUsingToken = localStorage.getItem("token");
+      if (!profileSectionCheckUsingToken) {
+        setProfile(false);
+      } else {
+        setProfile(true);
+      }
+    }
+    checkProfile();
+  }, []);
   // toggle replyconst [openReplies, setOpenReplies] = useState({});
   const [replyText, setReplyText] = useState({});
 
@@ -106,7 +138,7 @@ const NavBar = () => {
     }
     try {
       const res = await axios.post(
-        `https://capncut-backend-1.onrender.com/reply/${postId}`,
+        `${backendUrl}/reply/${postId}`,
         { text: replyText[postId] },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -127,10 +159,10 @@ const NavBar = () => {
     e.preventDefault();
 
     // handeling edge cases
-    if (!userData.title && userData.Description) {
-      return toast.error("please fill the title");
-    }
-    if (!userData.Description && userData.title) {
+    // if (!userData.title && userData.Description) {
+    //   return toast.error("please fill the title");
+    // }
+    if (!userData.Description) {
       toast.error("please fill the Description");
       return;
     }
@@ -148,7 +180,7 @@ const NavBar = () => {
     // sending postData to the backend
     try {
       const postDataSending = await axios.post(
-        `https://capncut-backend-1.onrender.com/formData`,
+        `${backendUrl}/formData`,
         {
           title: userData.title,
           Description: userData.Description,
@@ -156,7 +188,7 @@ const NavBar = () => {
         },
         {
           headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true
+          withCredentials: true,
         }
       );
       setPosts((prev) => [...prev, postDataSending.data]);
@@ -180,6 +212,7 @@ const NavBar = () => {
     localStorage.removeItem("token");
     toast.success("Logout successfully");
     setLogout(false);
+    setProfile(false);
   }
   function goToLoginPage() {
     navigate("/login");
@@ -219,7 +252,7 @@ const NavBar = () => {
     }
     try {
       const res = await axios.post(
-        `https://capncut-backend-1.onrender.com/like/${postId}`,
+        `${backendUrl}/like/${postId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -243,57 +276,190 @@ const NavBar = () => {
   return (
     <>
       <div>
-        <div className=" bg-[#151b34] h-30 md:h-23 w-full px-8 py-5  static">
+        <div className=" bg-[#101014] h-30 md:h-23 w-full px-2 py-6 static">
           <div className="flex justify-between items-center px-6 py-4 md:py-3">
             {/* Logo */}
-            <h1 className="text-3xl font-bold text-white">Capncut.io</h1>
+
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="
+    flex items-center justify-center sm:justify-start
+    gap-3 sm:gap-5
+    px-5 sm:px-7 py-2.5 sm:py-3
+    rounded-[10px]
+    bg-[#7895E5] cursor-pointer
+    shadow-md shadow-blue-900/30
+    border-b-[3px] border-b-white
+    transition-all duration-300
+    hover:bg-[#6783d9] active:scale-95
+    focus:outline-none focus:ring-2 focus:ring-sky-400
+  "
+            >
+              <GiHamburgerMenu
+                className="text-white mt-0.5 sm:mt-1"
+                size={22}
+              />
+              <h1 className="text-white text-xl sm:text-2xl font-bold hidden sm:block">
+                Menu
+              </h1>
+            </button>
 
             {/* Desktop Menu */}
-            <nav className="hidden md:flex items-center gap-6 text-white font-medium">
-              <Link to="/prompt" className=" px-4 py-2 rounded-[10px] flex items-center gap-2 text-white">
+            <nav className=" md:flex items-center gap-6 text-white font-medium">
+              {/* <Link to="/prompt" className=" px-4 py-2 rounded-[10px] flex items-center gap-2 text-white">
                <PiNewspaperFill size={20}/> Prompt
               </Link>
               <Link to="/myPosts" className="text-white px-4 py-2 rounded-[10px] flex items-center gap-2  ">
                <LuPenLine size={20}/> My Posts
-              </Link>
+              </Link> */}
               <button
                 onClick={handelPostClick}
-                className="flex items-center gap-2 px-5 py-2 rounded-[8px]  cursor-pointer text-white " 
+                className="
+    flex items-center justify-center sm:justify-start
+    gap-2 sm:gap-3
+    px-5 sm:px-6 py-2.5 sm:py-3
+    rounded-[10px]
+    bg-[#7895E5]
+    text-white text-lg sm:text-xl md:text-2xl font-bold
+    shadow-md shadow-blue-900/30
+    border-b-[3px] border-b-white
+    transition-all duration-300
+    hover:bg-[#6783d9] active:scale-95
+    focus:outline-none focus:ring-2 focus:ring-sky-400 cursor-pointer
+  "
               >
-                <MdOutlinePostAdd size={20} /> Post
+                <CgComment className="mt-1" />
+                Post
               </button>
-              <Link
+
+              {/* <Link
                 to="/contactUs"
                 className="flex items-center gap-2 px-3 py-2 text-white rounded-[8px]  cursor-pointer"
               >
                 <VscFeedback size={16} /> Contact us
-              </Link>
-              {logout && (
+              </Link> */}
+              {/* {logout && (
                 <button
                   onClick={handelLogout}
                   className="flex items-center gap-2 px-3 py-2 bg-red-600 hover:bg-red-700 rounded-[8px]  cursor-pointer"
                 >
                   <CgProfile size={20} /> Logout
                 </button>
-              )}
+              )} */}
             </nav>
+            <div
+              className={`
+    fixed top-5 left-0 
+    h-[90vh] sm:h-[92vh] 
+    w-[88vw] sm:w-[55vw] md:w-[30vw] lg:w-[22vw]
+    rounded-[25px] sm:rounded-[25px] md:rounded-[30px]
+    bg-[#0f0f1a]
+    flex flex-col gap-6
+    transform transition-transform duration-300 ease-in-out
+    p-6 sm:p-8
+    border border-sky-400/60
+    z-50
+    ${isOpen ? "translate-x-0" : "-translate-x-full border-none"}
+  `}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="self-end text-gray-400 hover:text-white transition"
+              >
+                <IoMdClose size={28} />
+              </button>
 
+              {/* Title */}
+              <div className="flex justify-between items-center mt-3 mb-2">
+                <h1 className="text-white font-bold text-2xl sm:text-[2rem] tracking-wide">
+                  CapnCut Help
+                </h1>
+              </div>
+
+              {/* Ask for Help Button */}
+              <button
+                onClick={handelPostClick}
+                className="
+      flex items-center justify-center sm:justify-start gap-3 sm:gap-5
+      mt-2 px-5 sm:px-6 py-3 sm:py-4 mb-4
+      bg-gradient-to-r from-blue-500 to-purple-500
+      rounded-[10px]
+      text-lg sm:text-xl
+      text-white font-bold
+      cursor-pointer
+      shadow-md shadow-blue-900/30
+      transition-all duration-300 hover:scale-[1.02] active:scale-95
+    "
+              >
+                <IoMdAdd size={28} className="sm:size-[32]" />
+                <span className="sm:block">Ask For Help</span>
+              </button>
+
+              {/* Links */}
+              <Link
+                to="/prompt"
+                className="flex items-center gap-3 px-3 py-2 sm:px-4 sm:py-3 text-white text-base sm:text-[18px] font-bold rounded-[8px] hover:bg-[#1a1a26]"
+              >
+                <PiNewspaperFill size={22} />
+                Prompt
+              </Link>
+
+              <Link
+                to="/myPosts"
+                className="flex items-center gap-3 px-3 py-2 sm:px-4 sm:py-3 text-white text-base sm:text-[18px] font-bold rounded-[8px] hover:bg-[#1a1a26]  "
+              >
+                <LuPenLine size={22} /> My Posts
+              </Link>
+
+              <Link
+                to="/contactUs"
+                className="flex items-center gap-3 px-3 py-2 sm:px-4 sm:py-3 text-white text-base sm:text-[18px] font-bold rounded-[8px] hover:bg-[#1a1a26] "
+              >
+                <VscFeedback size={20} /> Contact Us
+              </Link>
+              {profile && (
+                <Link
+                  to="/myProfile"
+                  className="flex items-center gap-3 px-3 py-2 sm:px-4 sm:py-3 text-white text-base sm:text-[18px] font-bold rounded-[8px] hover:bg-[#1a1a26]"
+                >
+                  <CgProfile size={22} />
+                  Profile
+                </Link>
+              )}
+              {logout && (
+                <button
+                  onClick={handelLogout}
+                  className="
+        flex items-center gap-3 px-3 py-3 sm:px-4 sm:py-4
+        bg-red-600 hover:bg-red-700
+        rounded-[8px] text-white text-base sm:text-[18px]
+        font-bold mt-1
+        transition active:scale-95
+      "
+                >
+                  <TbLogout2 size={22} /> Logout
+                </button>
+              )}
+            </div>
+
+            {/* mobile only */}
             {/* Hamburger - Mobile only */}
-            <button
+            {/* <button
               className="md:hidden flex flex-col gap-1.5 p-2 cursor-pointer"
               onClick={() => setIsOpen(!isOpen)}
             >
               <span className="w-6 h-0.5 bg-white rounded"></span>
               <span className="w-6 h-0.5 bg-white rounded"></span>
               <span className="w-6 h-0.5 bg-white rounded"></span>
-            </button>
+            </button> */}
           </div>
 
           {/* Mobile Menu */}
-          <div
+          {/* <div
             className={`fixed top-0 right-0 w-64 h-full bg-[#1e2a5b] shadow-lg p-6 flex flex-col gap-4 transform transition-transform duration-300 ease-in-out
-          ${isOpen ? "translate-x-0" : "translate-x-full"} md:hidden z-50`}
-          >
+            ${isOpen ? "translate-x-0" : "translate-x-full"} md:hidden z-50`}
+           >
             <button
               className="md:hidden flex flex-col gap-1.5 p-1"
               onClick={() => setIsOpen(!isOpen)}
@@ -334,7 +500,7 @@ const NavBar = () => {
                 <CgProfile size={20} /> Logout
               </button>
             )}
-          </div>
+          </div> */}
 
           {ui && (
             <div className="fixed inset-0  flex justify-center items-center z-50 p-4">
@@ -381,15 +547,15 @@ const NavBar = () => {
             </div>
           )}
           {formdata === true && (
-            <div className="fixed inset-0 flex justify-center overflow-y-hidden items-center z-[999] bg-black/50 p-5">
+            <div className="fixed inset-0 flex justify-center  overflow-y-hidden items-center z-[999] bg-black/50 p-7">
               <div
-                className="bg-[#101034] md:p-5 text-white font-medium shadow-md rounded-[12px] 
-                 max-w-[800px] h-[85vh] max-h-[90vh] p-6 overflow-y-auto
-                 sm:w-[95vw] sm:h-auto sm:max-h-[85vh] sm:p-4"
+                className=" bg-[#131319] md:p-8 text-white font-medium shadow-md rounded-[12px] 
+                 max-w-[800px] h-[90vh] max-h-[95vh] p-6 overflow-y-auto
+                 sm:w-[80vw] sm:h-auto sm:max-h-[100vh] sm:p-4 border-1 border-zinc-600"
               >
                 {/* Header */}
                 <div className="flex justify-between items-center mb-4">
-                  <h1 className="font-semibold text-[22px] sm:text-[20px] md:text-[28px] lg:text-[33px]">
+                  <h1 className="font-bold text-[22px] sm:text-[20px] md:text-[25px] lg:text-[33px]">
                     Ask For Help
                   </h1>
                   <button onClick={() => setFormData(false)}>
@@ -404,7 +570,7 @@ const NavBar = () => {
                 {/* Form */}
                 <form className="flex flex-col gap-4" onSubmit={handelFormData}>
                   {/* Title */}
-                  <div className="flex flex-col gap-1">
+                  {/* <div className="flex flex-col gap-1">
                     <label className="text-gray-200 font-medium text-sm sm:text-[14px] md:text-[18px]">
                       What effect are you trying to create?
                     </label>
@@ -414,9 +580,9 @@ const NavBar = () => {
                       value={userData.title}
                       onChange={managePostData}
                       placeholder="eg. How to make that Tom AI effect like in TikTok"
-                      className="w-full p-3 rounded-[6px] bg-gray-700 text-white placeholder-gray-400 outline-none  md:text-[16px] sm:text-[14px]"
+                      className="w-full p-3 rounded-[6px] border-1 bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 outline-none  md:text-[15px] sm:text-[14px]"
                     />
-                  </div>
+                  </div> */}
 
                   {/* Description */}
                   <div className="flex flex-col gap-1">
@@ -428,21 +594,30 @@ const NavBar = () => {
                       value={userData.Description}
                       onChange={managePostData}
                       placeholder="I saw this amazing TikTok where..."
-                      className="w-full p-3 h-[17vh] sm:h-[20vh] rounded-[6px] font-medium bg-gray-700 text-white placeholder-gray-400 resize-none outline-none  md:text-[17px] sm:text-[14px]"
+                      className="w-full p-3 h-[17vh]  sm:h-[20vh] rounded-[6px] font-medium  border-1 bg-gray-800 border-gray-600 text-white placeholder:text-gray-400 resize-none outline-none  md:text-[15px] sm:text-[14px]"
                     />
                   </div>
 
                   {/* File Upload */}
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-2 w-full">
                     <label className="text-gray-200 font-medium text-sm sm:text-[14px] md:text-[18px]">
                       Upload Reference (Optional)
                     </label>
-                    <input
-                      type="file"
-                      onChange={handelFileChanges}
-                      className="text-gray-300 cursor-pointer"
-                    />
+
+                    <div className="flex flex-col justify-center items-center border-dotted border-zinc-600 border-2 rounded-[10px] py-6 px-3 transition-all duration-300 hover:border-sky-400 hover:bg-[#111]">
+                      <MdOutlineFileUpload
+                        size={35}
+                        color="blue"
+                        className="mb-3"
+                      />
+                      <input
+                        type="file"
+                        onChange={handelFileChanges}
+                        className="text-gray-300 text-sm sm:text-base bg-[#0f0f1a] border border-zinc-700 rounded-md px-2 py-2 w-[90%] sm:w-[80%] md:w-[60%] cursor-pointer file:cursor-pointer file:mr-3 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-sky-600 file:text-white hover:file:bg-sky-500 transition"
+                      />
+                    </div>
                   </div>
+
                   {/* community guidelines */}
                   <div className="text-zinc-500">
                     <h2 className="text-[20px] font-bold  text-[#2b06d4]">
@@ -459,14 +634,14 @@ const NavBar = () => {
                   <div className="flex flex-col sm:flex-row justify-between md:gap-10 gap-3 mt-2">
                     <button
                       type="submit"
-                      className="w-full sm:w-1/2 bg-blue-700 hover:bg-blue-600 p-3 rounded-[6px] cursor-pointer text-white font-medium text-sm"
+                      className="w-full sm:w-1/2 bg p-3 rounded-[6px] cursor-pointer bg-linear-to-r from-blue-500 to-purple-500 font-bold  text-white text-[18px]"
                     >
                       {loading ? "Posting..." : "Post"}
                     </button>
                     <button
                       type="button"
                       onClick={() => setFormData(false)}
-                      className="w-full sm:w-1/2 bg-red-700 hover:bg-red-600 p-3 rounded-[6px] cursor-pointer text-white font-medium text-sm"
+                      className="w-full sm:w-1/2 bg-red-700 hover:bg-red-600 p-3 rounded-[6px] cursor-pointer text-white text-[16px] font-bold"
                     >
                       Cancel
                     </button>
@@ -477,12 +652,21 @@ const NavBar = () => {
           )}
         </div>
         {/* // content section */}
-        <div className="bg-[#151b34] w-full min-h-screen">
-          <div className="flex flex-col items-center py-12 px-4 text-center">
-            <h1 className="text-white text-4xl md:text-5xl font-semibold mb-3">
-              Trending This Week
-            </h1>
-            <h2 className="text-gray-600 font-medium text-[16.5px] md:text-[20px]">
+        <div className="bg-[#101014] w-full min-h-screen">
+          <div className="flex flex-col items-center justify-center py-10 sm:py-12 px-4 sm:px-6 md:px-10 text-center">
+            {/* Icon + Title */}
+            <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+              <IoIosTrendingUp
+                size={38}
+                className="text-[#7895E5] sm:size-[45px] md:size-[55px]"
+              />
+              <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight">
+                Trending This Week
+              </h1>
+            </div>
+
+            {/* Subtitle */}
+            <h2 className="text-gray-400 font-medium text-base sm:text-[17px] md:text-[20px] max-w-[90%] sm:max-w-[70%] md:max-w-[60%]">
               Popular effects everyone's asking about
             </h2>
           </div>
@@ -527,117 +711,155 @@ const NavBar = () => {
         </div>
       </div>
       {posts.length === 0 ? (
-        <div className=" bg-[#151b34] flex justify-center items-center">
-             <ClipLoader size={50} color="blue"/>
-        </div> 
+        <div className=" bg-[#101014] flex justify-center items-center">
+          <ClipLoader size={50} color="blue" />
+        </div>
       ) : (
         <>
-        
-          <div className="min-h-screen bg-[#151b34] w-full">
+          <div className="min-h-screen bg-[#101014] w-full">
             <div className="latest-questions flex flex-col items-center justify-center mb-5">
               <h1 className="md:text-6xl text-white font-medium mb-1 -mt-20 text-3xl ">
                 Latest Questions
               </h1>
+
               <h2 className="text-gray-400 font-medium md:text-[17px]">
                 Find tutorials for the latest editing effects
               </h2>
             </div>
+            <div className="flex gap-4 mb-5 flex-wrap justify-center">
+              {/* Filter dropdown */}
+              <select
+                value={selectedFilter}
+                onChange={(e) => setSelectedFilter(e.target.value)}
+                className="bg-gray-800 text-white px-5 py-2 rounded-lg outline-none cursor-pointer shadow-md border border-gray-600 hover:border-blue-500 transition-colors duration-200"
+              >
+                <option value="all">All Posts</option>
+                <option value="liked">Liked</option>
+                <option value="hasImage">With Image</option>
+              </select>
+
+              {/* Sort dropdown */}
+              <select
+                value={sortByRecent ? "recent" : "default"}
+                onChange={(e) => setSortByRecent(e.target.value === "recent")}
+                className="bg-gray-800 text-white px-5 py-2 rounded-lg outline-none cursor-pointer shadow-md border border-gray-600 hover:border-blue-500 transition-colors duration-200"
+              >
+                <option value="default">Default</option>
+                <option value="recent">Recent</option>
+              </select>
+            </div>
+
             <div className="flex flex-col items-center justify-center md:p-10 p-2">
-              {posts.map((post, i) => (
-                <div
-                  key={post._id || i}
-                  className="flex flex-col bg-[#242b54] min-h-60 rounded-xl p-5 md:p-7 shadow-md mb-7 w-full md:w-[60%]"
-                >
-                  <div className="flex items-center gap-2">
-                    <FaUserEdit className="text-[#3651ff] font-bold" size={22}/>
-                       <h2 className="text-[#7e7d7b] md:text-[18px] font-medium mb-1 text-[19.2px]">
-                    {post.user?.userName}
-                  </h2>
-                  </div>
-                 
-                  <h1 className="text-white font-medium text-[19.5px] md:text-[x-large] mb-3">
-                    {post.title}
-                  </h1>
-                  <p className="text-[#b4a6a6] mb-2 text-justify font-medium md:text-[18px] text-[15.2px]">
-                    {post.Description}
-                  </p>
-                  {post.image && (
-                    <>
-                      <img
-                        src={post.image}
-                        alt="post"
-                        className="object-cover rounded-[12px] w-full"
-                      ></img>
-                    </>
-                  )}
-                  <div className="flex items-center justify-between gap-3 mt-3">
-                    {/* like button */}
-                    <button
-                      onClick={() => handelLikeChanges(post._id)}
-                      className={`text-xl transition-colors duration-200 gap-2 ${
-                        post.isLiked
-                          ? "text-[#0025ff]"
-                          : "text-gray-200 hover:text-sky-100"
-                      }`}
-                    >
-                      <div className="flex items-center gap-[2px] bg-[#02a0ef] px-3 py-2 rounded-[20px] transform transition-transform cursor-pointer duration-300 hover:-translate-y-1">
-                        <h1 className="text-[16.5px] font-bold">
-                          {post.likesCount || 0}
-                        </h1>
-                        <AiFillLike className="font-bold " />
-                      </div>
-                    </button>
-
-                    {/* reply toggle button */}
-                    <button
-                      onClick={() => toggleReplies(post._id)}
-                      className="bg-gray-600 px-4 py-2 rounded-[18px] text-white hover:bg-gray-500 flex gap-1 cursor-pointer "
-                    >
-                      <FaRegComment className="mt-1" />
-                      <h1 className="text-white font-medium text-[16px]">
-                        {post.replies?.length || 0} helps
-                      </h1>
-                    </button>
-                  </div>
-                  {openReplies[post._id] && (
-                    <div className="mt-3 transition-all duration-300 ">
-                      {/* existing replies list */}
-                      {post.replies && post.replies.length > 0 && (
-                        <div className="mb-2">
-                          {post.replies.map((r, idx) => (
-                            <div key={idx} className="text-gray-300 mb-1">
-                              <span className="font-medium">
-                                {r.user?.userName || "User"}:
-                              </span>{" "}
-                              {r.text}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* reply input */}
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          placeholder="Write a reply..."
-                          value={replyText?.[post._id] || ""}
-                          onChange={(e) => handleReplyChange(e, post._id)}
-                          className="flex-1 flex p-3 rounded-[6px] bg-gray-700 text-white outline-none"
-                          required
-                        />
-                        <button
-                          onClick={() => handleReplySubmit(post._id)}
-                          className="bg-blue-700 px-5  rounded-[6px] cursor-pointer text-[16px] font-medium text-white  hover:bg-blue-600"
-                        >
-                          Post
-                        </button>
-                      </div>
+              {posts
+                .filter((post) => {
+                  if (selectedFilter === "all") return true;
+                  if (selectedFilter === "liked") return post.isLiked;
+                  if (selectedFilter === "hasImage") return post.image;
+                  return true;
+                })
+               .reverse()
+                .map((post, i) => (
+                  <div
+                    key={post._id || i}
+                    className="flex flex-col bg-[#1a1a24] min-h-60 rounded-xl p-5 md:p-7 shadow-md mb-7 w-full md:w-[60%]"
+                  >
+                    <div className="flex items-center gap-2">
+                      <FaUserEdit
+                        className="text-[#3651ff] font-bold"
+                        size={22}
+                      />
+                      <Link
+                        to={`/profile/${post.user?.userName}`}
+                        className="text-[#7e7d7b] md:text-[18px] font-medium mb-1 text-[19.2px] hover:text-blue-400 transition"
+                      >
+                        {post.user?.userName}
+                      </Link>
                     </div>
-                  )}
-                </div>
-              ))}
+
+                    <h1 className="text-white font-medium text-[19.5px] md:text-[x-large] mb-3">
+                      {post.title}
+                    </h1>
+                    <p className="text-[#b4a6a6] mb-2 text-justify font-medium md:text-[18px] text-[15.2px]">
+                      {post.Description}
+                    </p>
+                    {post.image && (
+                      <>
+                        <img
+                          src={post.image}
+                          alt="post"
+                          className="object-cover rounded-[12px] w-full"
+                        ></img>
+                      </>
+                    )}
+                    <div className="flex items-center justify-between gap-3 mt-3">
+                      {/* like button */}
+                      <button
+                        onClick={() => handelLikeChanges(post._id)}
+                        className={`text-xl transition-colors duration-200 gap-2 ${
+                          post.isLiked
+                            ? "text-[#0025ff]"
+                            : "text-gray-200 hover:text-sky-100"
+                        }`}
+                      >
+                        <div className="flex items-center gap-[2px] bg-[#02a0ef] px-3 py-2 rounded-[20px] transform transition-transform cursor-pointer duration-300 hover:-translate-y-1">
+                          <h1 className="text-[16.5px] font-bold">
+                            {post.likesCount || 0}
+                          </h1>
+                          <AiFillLike className="font-bold " />
+                        </div>
+                      </button>
+
+                      {/* reply toggle button */}
+                      <button
+                        onClick={() => toggleReplies(post._id)}
+                        className="bg-gray-600 px-4 py-2 rounded-[18px] text-white hover:bg-gray-500 flex gap-1 cursor-pointer "
+                      >
+                        <FaRegComment className="mt-1" />
+                        <h1 className="text-white font-medium text-[16px]">
+                          {post.replies?.length || 0} helps
+                        </h1>
+                      </button>
+                    </div>
+                    {openReplies[post._id] && (
+                      <div className="mt-3 transition-all duration-300 ">
+                        {/* existing replies list */}
+                        {post.replies && post.replies.length > 0 && (
+                          <div className="mb-2">
+                            {post.replies.map((r, idx) => (
+                              <div key={idx} className="text-gray-300 mb-1">
+                                <span className="font-medium">
+                                  {r.user?.userName || "User"}:
+                                </span>{" "}
+                                {r.text}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* reply input */}
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            placeholder="Write a reply..."
+                            value={replyText?.[post._id] || ""}
+                            onChange={(e) => handleReplyChange(e, post._id)}
+                            className="flex-1 flex p-3 rounded-[6px] bg-gray-700 text-white outline-none"
+                            required
+                          />
+                          <button
+                            onClick={() => handleReplySubmit(post._id)}
+                            className="bg-blue-700 px-5  rounded-[6px] cursor-pointer text-[16px] font-medium text-white  hover:bg-blue-600"
+                          >
+                            Post
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
             </div>
           </div>
+          
         </>
       )}
     </>
