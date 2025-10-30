@@ -214,8 +214,8 @@ const NavBar = () => {
     setLogout(false);
     setProfile(false);
   }
-  function goToLoginPage() {
-    navigate("/login");
+  function goToSignupPage() {
+    navigate("/signup");
   }
   // handeling postClick
   function handelPostClick() {
@@ -507,7 +507,7 @@ const NavBar = () => {
               <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg w-full max-w-sm sm:max-w-md p-6 sm:p-8 flex flex-col items-center">
                 {/* Heading */}
                 <h1 className="text-center text-red-600 dark:text-red-400 font-bold text-lg sm:text-xl mb-4">
-                  Please Login to Post Your Ideas and Suggestions!
+                  Please Sign up to Post Your Ideas and Suggestions!
                 </h1>
 
                 {/* Info Icon (optional) */}
@@ -531,10 +531,10 @@ const NavBar = () => {
                 {/* Buttons */}
                 <div className="flex flex-col  sm:flex-row justify-between gap-4 w-full mt-2">
                   <button
-                    onClick={goToLoginPage}
+                    onClick={goToSignupPage}
                     className="bg-blue-600 hover:bg-blue-500 cursor-pointer text-white font-medium rounded-lg py-2 px-4 sm:py-3 w-full sm:w-auto transition-all duration-200 shadow-md"
                   >
-                    Login
+                   Signup
                   </button>
                   <button
                     onClick={() => setUi(false)}
