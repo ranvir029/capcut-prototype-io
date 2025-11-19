@@ -10,7 +10,7 @@ const Freelancer = () => {
   const [form, setForm] = useState(false);
   const [portfolioData, setportfolioData] = useState([]);
 
-  const backendUrl = "http://localhost:3000";
+   const backendUrl = `https://capncut-backend-1.onrender.com`;
 
   function handelPortfolio() {
     const checkUserToken = localStorage.getItem("token");

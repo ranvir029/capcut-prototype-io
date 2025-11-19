@@ -351,7 +351,7 @@ const NavBar = () => {
             <div
               className={`
     fixed top-5 left-0 
-    h-[95vh] sm:h-[95vh] 
+    h-[96vh] sm:h-[96vh] 
     w-[88vw] sm:w-[55vw] md:w-[30vw] lg:w-[22vw]
     rounded-[25px] sm:rounded-[25px] md:rounded-[30px]
     bg-[#0f0f1a]
@@ -440,10 +440,10 @@ const NavBar = () => {
                 <button
                   onClick={handelLogout}
                   className="
-        flex items-center gap-3 px-3 py-3 sm:px-4 sm:py-4
+        flex items-center gap-2 px-3 py-3 sm:px-4 sm:py-4
         bg-red-600 hover:bg-red-700
         rounded-[8px] text-white text-base sm:text-[18px]
-        font-bold mt-1
+        font-bold -mt-3
         transition active:scale-95
       "
                 >
