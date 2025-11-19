@@ -11,7 +11,9 @@ const PublicProfile = () => {
   const [socialMediaLinks, setSocialMediaLinks] = useState([]);
   useEffect(() => {
     async function fetchProfile() {
-      const res = await axios.get(`https://capncut-backend-1.onrender.com/profile/${username}`);
+      const res = await axios.get(
+        `https://capncut-backend-1.onrender.com/profile/${username}`
+      );
       setSocialMediaLinks(res.data.user.socialLinks || []);
       setProfile(res.data.user);
       setPosts(res.data.posts);
@@ -28,10 +30,12 @@ const PublicProfile = () => {
               {profile.userName.charAt(0).toUpperCase()}
             </div>
             <h1 className="text-3xl font-bold mt-4 mb-2 flex gap-2">
-              {profile.userName}</h1>
+              {profile.userName}
+            </h1>
             <p className="text-gray-300 flex gap-2">
-                <IoMail className="text-blue-400 mt-1" />
-              {profile.email}</p>
+              <IoMail className="text-blue-400 mt-1" />
+              {profile.email}
+            </p>
           </div>
           {/* Social Media Links Section */}
           <div className="flex flex-col items-center mb-10">
@@ -46,12 +50,17 @@ const PublicProfile = () => {
                   {socialMediaLinks.map((item, index) => (
                     <a
                       key={index}
-                      href={item}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-blue-500/20 border border-blue-400/30 flex gap-2 px-4 py-2 rounded-xl hover:bg-blue-600/30 transition-all duration-300 text-blue-300 font-medium shadow-md hover:shadow-blue-500/30"
+                      href={
+                        item.startsWith("http://") ||
+                        item.startsWith("https://")
+                          ? item
+                          : `https://${item}`
+                      }
+                      
+                        className="bg-blue-500/20 border border-blue-400/30 flex gap-2 px-4 py-2 rounded-xl hover:bg-blue-600/30 transition-all duration-300 text-blue-300 font-medium shadow-md hover:shadow-blue-500/30"
                     >
-                      <FiExternalLink className="mt-[2.3px]" />{item}
+                      <FiExternalLink className="mt-[2.3px]" />
+                      {item}
                     </a>
                   ))}
                 </div>
@@ -66,7 +75,7 @@ const PublicProfile = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.length === 0 ? (
               <p className="text-gray-400 text-lg text-center col-span-full">
-                No posts yet 😕
+                No posts yet ...
               </p>
             ) : (
               posts.map((post) => (

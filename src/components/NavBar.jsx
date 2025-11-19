@@ -20,6 +20,7 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { CgComment } from "react-icons/cg";
 import { IoMdAdd } from "react-icons/io";
 import { TbLogout2 } from "react-icons/tb";
+import { BsBriefcaseFill } from "react-icons/bs";
 
 const NavBar = () => {
   // Navigating to Login page
@@ -418,6 +419,14 @@ const NavBar = () => {
               >
                 <VscFeedback size={20} /> Contact Us
               </Link>
+              
+              <Link
+                to="/freelancer"
+                className="flex items-center gap-3 px-3 py-2 sm:px-4 sm:py-3 text-white text-base sm:text-[18px] font-bold rounded-[8px] hover:bg-[#1a1a26] "
+              >
+                <BsBriefcaseFill size={20} /> Freelancing
+              </Link>
+              
               {profile && (
                 <Link
                   to="/myProfile"

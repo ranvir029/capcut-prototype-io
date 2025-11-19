@@ -10,6 +10,7 @@ import MyPosts from "./components/MyPosts";
 import Contact from "./components/Contact";
 import Myprofile from "./components/Myprofile"; 
 import PublicProfile from "./components/PublicProfile"
+import Freelancer from "./components/Freelancer";
 const App = () => {
   return (
     <div>
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/contactUs" element={<Contact />} />
         <Route path="/myProfile" element={<Myprofile />} />
         <Route path="/profile/:username" element={<PublicProfile />} />
+        <Route path="/freelancer" element={<Freelancer/>}/>
       </Routes>
       <ToastContainer />
     </div>

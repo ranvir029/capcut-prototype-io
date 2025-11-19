@@ -239,7 +239,7 @@ const MyProfile = () => {
         <h2 className="text-3xl sm:text-4xl mb-6 font-medium text-center lg:text-left text-zinc-800 flex gap-2">
           <FaSignsPost className="mt-1"/> My Posts</h2>
         {posts.length === 0 ? (
-          <p className="text-gray-400 text-center lg:text-left">No posts yet 😕</p>
+          <p className="text-gray-400 text-center lg:text-left">Loading Posts...</p>
         ) : (
           <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-8">
             {posts.map((post) => (
