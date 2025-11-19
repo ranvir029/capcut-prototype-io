@@ -351,7 +351,7 @@ const NavBar = () => {
             <div
               className={`
     fixed top-5 left-0 
-    h-[90vh] sm:h-[92vh] 
+    h-[95vh] sm:h-[95vh] 
     w-[88vw] sm:w-[55vw] md:w-[30vw] lg:w-[22vw]
     rounded-[25px] sm:rounded-[25px] md:rounded-[30px]
     bg-[#0f0f1a]
